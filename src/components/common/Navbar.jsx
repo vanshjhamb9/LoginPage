@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-import logo from "../../assets/Logo/Logo-Full-Light.png"
-import { Link, matchPath } from 'react-router-dom'
+import { Link, matchPath, useNavigate } from 'react-router-dom'
 import {NavbarLinks} from "../../data/navbar-links"
 import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -10,6 +9,10 @@ import { apiConnector } from '../../services/apiconnector'
 import { categories } from '../../services/apis'
 import { useState } from 'react'
 import {IoIosArrowDropdownCircle} from "react-icons/io"
+import { logout } from "../../services/operations/authAPI"
+import { VscSignOut } from "react-icons/vsc"
+import { useDispatch } from "react-redux"
+
 
 const subLinks = [
     {
@@ -29,6 +32,9 @@ const Navbar = () => {
     const {user} = useSelector( (state) => state.profile );
     const {totalItems} = useSelector( (state) => state.cart )
     const location = useLocation();
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const [open, setOpen] = useState(false)
 
     const [ssubLinks, setSsubLinks]  = useState([]);
 
@@ -59,9 +65,6 @@ const Navbar = () => {
     <div className='flex h-14 items-center justify-center border-b-[1px] border-b-richblack-700'>
       <div className='flex w-11/12 max-w-maxContent items-center justify-between'>
         {/* Image */}
-      <Link to="/">
-        <img src={logo} width={160} height={42} loading='lazy'/>
-      </Link>
 
       {/* Nav Links */}
       <nav>
@@ -155,7 +158,20 @@ const Navbar = () => {
                 )
             }
             {
-                token !== null && <ProfileDropDown />
+                token !== null &&
+                <div>
+                 <ProfileDropDown />
+                 <div
+            onClick={() => {
+              dispatch(logout(navigate))
+              setOpen(false)
+            }}
+            className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-richblack-100 hover:bg-richblack-700 hover:text-richblack-25"
+          >
+            <VscSignOut className="text-lg" />
+            Logout
+          </div>
+          </div>
             }
             
         </div>
